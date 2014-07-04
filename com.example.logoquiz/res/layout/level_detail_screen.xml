@@ -5,7 +5,7 @@
     tools:context=".LevelDetailScreen" >
     
     <LinearLayout 
-        android:id="@+id/titleOnLevelDetail"
+        android:id="@+id/titleBarOnLevelDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="3dp"
@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="10dp"
-        android:layout_below="@+id/titleOnLevelDetail"
+        android:layout_below="@+id/titleBarOnLevelDetail"
         android:numColumns="4"
         android:verticalSpacing="5dp"
         android:horizontalSpacing="5dp"/>

@@ -18,5 +18,7 @@
     <string name="title_activity_level_screen">Level_screen</string>
     <string name="title_activity_level_detail_screen">LevelDetailScreen</string>
     <string name="hello_world">Hello world!</string>
+    <string name="title_activity_game_screen">GameScreen</string>
+    <string name="check">Check</string>
 
 </resources>
