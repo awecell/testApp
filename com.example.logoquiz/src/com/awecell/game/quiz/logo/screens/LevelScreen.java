@@ -17,11 +17,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.awecell.game.quiz.logo.R;
+import com.awecell.game.quiz.logo.utils.ConstantClass;
+import com.awecell.game.quiz.logo.utils.SingletonClass;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
 public class LevelScreen extends Activity implements OnClickListener{
 
 	private int screenWidth;
 	private int screenHeight;
+	private AdView adView;
 	private LinearLayout layoutForLevels;
 
 
@@ -34,7 +39,44 @@ public class LevelScreen extends Activity implements OnClickListener{
 		screenHeight = getResources().getDisplayMetrics().heightPixels;
 		layoutForLevels = ((LinearLayout)findViewById(R.id.layoutForLevels));
 		createLevels();
+		adsLoad();
 	}
+	
+	
+	private void adsLoad() {
+		adView = new AdView(LevelScreen.this);
+		LinearLayout adslayout = ((LinearLayout)(findViewById(R.id.addOnLevelScreen)));
+		SingletonClass.getSingletonObject().getMyAdd().androidGmsAdsLoad(adView, adslayout, AdSize.BANNER);
+	}
+	
+	
+	@Override
+	protected void onResume() {
+		if(adView!=null){
+			adView.resume();
+		}
+		super.onResume();
+	}
+	
+	
+	@Override
+	protected void onDestroy() {
+		if(adView!=null){
+			adView.destroy();
+		}
+		super.onDestroy();
+	}
+	
+	
+	@Override
+	protected void onPause() {
+		if(adView!=null){
+			adView.pause();
+		}
+		super.onPause();
+	}
+	
+	
 
 	private void createLevels() {
 		AssetManager assetManager = this.getAssets();
@@ -64,19 +106,22 @@ public class LevelScreen extends Activity implements OnClickListener{
 			e.printStackTrace();
 		}
 	}
+	
+	
 
 	private LinearLayout.LayoutParams getLayoutParams(int width,int height){
 		LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, height);
 		param.topMargin = (int) (screenWidth*0.041);
 		return param;
 	}
+	
+	
 
 	@Override
 	public void onClick(View view) {
-		
 		String level = ((TextView)view).getText().toString();
 		Intent intent = new Intent(this, LevelDetailScreen.class);
-		intent.putExtra("levelName", level);
+		intent.putExtra(ConstantClass.LEVEL_NAME, level);
 		startActivity(intent);
 	}
 

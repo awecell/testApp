@@ -11,14 +11,20 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.awecell.game.quiz.logo.R;
+import com.awecell.game.quiz.logo.utils.ConstantClass;
+import com.awecell.game.quiz.logo.utils.SingletonClass;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 
 public class GameScreen extends Activity implements OnClickListener{
 	
 	private ImageView logoView;
 	private String answer;
+	private AdView adView;
 	private EditText userInputEditText;
 
 
@@ -32,12 +38,49 @@ public class GameScreen extends Activity implements OnClickListener{
 		
 		// getting data from intent
 		Intent intent = getIntent();
-		Bitmap logo = intent.getParcelableExtra("image");
-		answer = intent.getStringExtra("answer");
+		Bitmap logo = intent.getParcelableExtra(ConstantClass.IMAGE);
+		answer = intent.getStringExtra(ConstantClass.ANSWER);
 		
 		logoView.setImageBitmap(logo);
 		((Button)findViewById(R.id.checkAnswerButton)).setOnClickListener(this);
+		
+		adsLoad();
 	}
+	
+	
+	private void adsLoad() {
+		adView = new AdView(GameScreen.this);
+		LinearLayout adslayout = ((LinearLayout)(findViewById(R.id.addOnGameScreen)));
+		SingletonClass.getSingletonObject().getMyAdd().androidGmsAdsLoad(adView, adslayout, AdSize.BANNER);
+	}
+	
+	
+	@Override
+	protected void onResume() {
+		if(adView!=null){
+			adView.resume();
+		}
+		super.onResume();
+	}
+	
+	
+	@Override
+	protected void onDestroy() {
+		if(adView!=null){
+			adView.destroy();
+		}
+		super.onDestroy();
+	}
+	
+	
+	@Override
+	protected void onPause() {
+		if(adView!=null){
+			adView.pause();
+		}
+		super.onPause();
+	}
+	
 
 	@Override
 	public void onClick(View v) {
@@ -46,7 +89,7 @@ public class GameScreen extends Activity implements OnClickListener{
 			if(isAnswerRight())
 				doShakeAnimation();
 			else
-				Toast.makeText(this, "Wrong Answer", Toast.LENGTH_SHORT).show();
+				Toast.makeText(this, ConstantClass.TEXT_FOR_WRONG_ANSWER, Toast.LENGTH_SHORT).show();
 			break;
 
 		default:

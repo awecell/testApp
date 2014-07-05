@@ -113,5 +113,12 @@
              android:text="@string/check"
              android:textAppearance="?android:attr/textAppearanceMedium"/>
      </LinearLayout>
+     
+     <LinearLayout 
+         android:id="@+id/addOnGameScreen"
+         android:layout_width="match_parent"
+         android:layout_height="50dp"
+         android:orientation="vertical"
+         android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>
