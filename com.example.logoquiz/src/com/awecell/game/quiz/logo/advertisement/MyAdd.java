@@ -1,4 +1,4 @@
-package com.awecell.game.quiz.advertisement;
+package com.awecell.game.quiz.logo.advertisement;
 
 import android.app.Activity;
 import android.util.Log;

@@ -1,6 +1,6 @@
 package com.awecell.game.quiz.logo.utils;
 
-import com.awecell.game.quiz.advertisement.MyAdd;
+import com.awecell.game.quiz.logo.advertisement.MyAdd;
 
 public class SingletonClass {
 
@@ -14,7 +14,7 @@ public class SingletonClass {
 		return singleton;
 	}
 	
-	public com.awecell.game.quiz.advertisement.MyAdd getMyAdd(){
+	public com.awecell.game.quiz.logo.advertisement.MyAdd getMyAdd(){
 		if(myAdd==null){
 			myAdd = new MyAdd();
 		}

@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.awecell.game.quiz.logo.R;
+import com.awecell.game.quiz.logo.utils.CreateDb;
 import com.awecell.game.quiz.logo.utils.SingletonClass;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -25,6 +26,9 @@ public class HomeScreen extends Activity implements OnClickListener{
         ((Button)findViewById(R.id.playButton)).setOnClickListener(this);
         adsLoad();
         fullScreenAddOnExit();
+        
+        CreateDb createDb = new CreateDb(this);
+        createDb.start();
     }
     
 

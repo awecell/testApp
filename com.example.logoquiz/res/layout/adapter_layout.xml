@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
     <ImageView 
         android:id="@+id/imageViewOnGrid"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:contentDescription="@string/app_name"/>
+    <ImageView 
+        android:id="@+id/tickImage"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_alignParentRight="true"
+        android:visibility="invisible"
+        android:background="@drawable/tick"
+        android:contentDescription="@string/app_name"/>
+    </RelativeLayout>
 
-</LinearLayout>
+
