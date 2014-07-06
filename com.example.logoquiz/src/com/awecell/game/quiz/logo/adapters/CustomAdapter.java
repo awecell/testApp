@@ -3,7 +3,6 @@ package com.awecell.game.quiz.logo.adapters;
 import java.util.ArrayList;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,15 +56,9 @@ public class CustomAdapter extends BaseAdapter{
 		imageView.setDrawingCacheEnabled(true);
 
 		//checking whether this logo is answered or not 
-		try {
 			if(answeredList.get(position)==ConstantClass.ANSWERED){
 				((ImageView)convertView.findViewById(R.id.tickImage)).setVisibility(View.VISIBLE);
 			}
-		}
-		catch(Exception e){
-			Log.e("","position = "+data.size());
-		}
-
 		return convertView;
 	}
 
