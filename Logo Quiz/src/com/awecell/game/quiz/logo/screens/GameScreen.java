@@ -22,7 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.awecell.game.quiz.logo.R;
+import com.awecell.game.quiz.category.logo.R;
 import com.awecell.game.quiz.logo.utils.ConstantValues;
 import com.awecell.game.quiz.logo.utils.UpdateDb;
 
@@ -88,6 +88,7 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 				updateDb.start();
 			}
 			else{
+				userInputEditText.setText("");
 				Toast.makeText(this, ConstantValues.TEXT_FOR_WRONG_ANSWER, Toast.LENGTH_SHORT).show();
 			}
 			break;
@@ -111,6 +112,9 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 			break;
 
 		default:
+			// getting text from jumbled keypad and setting it on edit text
+			String text = ((Button)v).getText().toString(); 
+			userInputEditText.append(text);
 			break;
 		}
 
@@ -134,7 +138,9 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		userInputEditText.setInputType(InputType.TYPE_NULL);
 		LinearLayout keypadFirstRow = ((LinearLayout)findViewById(R.id.keyPadFirstRow));
 		LinearLayout KeypadSecondRow = ((LinearLayout)findViewById(R.id.keyPadSecondRow));
-
+         
+		keypadFirstRow.removeAllViews();
+		KeypadSecondRow.removeAllViews();
 
 		//creating a arraylist of answer string length
 		ArrayList<Integer> randomNumberList = new ArrayList<Integer>();
@@ -145,7 +151,8 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 
 		for(int i =0;i<answer.length();i++){
 			Button btn = new Button(this);
-
+            btn.setOnClickListener(this);
+			
 			// getting random number and using it to set answer button in jumbled way
 			int index = new Random().nextInt(randomNumberList.size());
 			btn.setText(""+answer.charAt(randomNumberList.get(index)));
@@ -157,6 +164,7 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 			else
 				KeypadSecondRow.addView(btn);
 		}
+		
 	}
 
 

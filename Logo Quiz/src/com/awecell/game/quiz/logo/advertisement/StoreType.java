@@ -7,23 +7,19 @@ public class StoreType
 	public static boolean AMAZON = false;
 	public static boolean OTHERS = false;
 	
-	public static String admob_id_small = " ";
-	public static String admob_id_large = "";
+	public static String admob_id = " ";
 	public static String mInterstitialAdId = "";
 	public static String review_url ="";
 	
 	
 	public StoreType() {
 		if(SAMSUNG){
-			admob_id_small ="";
-			admob_id_large = "";
+			admob_id ="";
 		} else if(AMAZON) {
-			admob_id_small ="";
-			admob_id_large = "";
+			admob_id ="";
 		} 
 		else if(OTHERS){
-			admob_id_small ="";
-			admob_id_large = "";
+			admob_id ="";
 		}
 	}
 	

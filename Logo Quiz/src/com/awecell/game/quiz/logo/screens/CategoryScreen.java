@@ -18,7 +18,7 @@ import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.awecell.game.quiz.logo.R;
+import com.awecell.game.quiz.category.logo.R;
 import com.awecell.game.quiz.logo.utils.ConstantValues;
 import com.awecell.game.quiz.logo.utils.CreateDb;
 

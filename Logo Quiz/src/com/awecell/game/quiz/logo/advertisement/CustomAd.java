@@ -15,9 +15,9 @@ public class CustomAd {
 
 	
 	public void androidGmsAdsLoad(AdView adView,ViewGroup adslayout,AdSize adSize) {
-		adView.setAdUnitId("B3EEABB8EE11C2BE770B684D95219ECB");
-		//AdRequest adRequest = new AdRequest.Builder().build();
-		AdRequest adRequest = new AdRequest.Builder().addTestDevice("B3EEABB8EE11C2BE770B684D95219ECB").build();
+		adView.setAdUnitId(StoreType.admob_id);
+		AdRequest adRequest = new AdRequest.Builder().build();
+		//AdRequest adRequest = new AdRequest.Builder().addTestDevice("B3EEABB8EE11C2BE770B684D95219ECB").build();
 		adView.setAdSize(adSize);
 		adView.loadAd(adRequest);
 		adslayout.addView(adView);

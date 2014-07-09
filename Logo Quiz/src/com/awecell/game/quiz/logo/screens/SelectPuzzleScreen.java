@@ -23,7 +23,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.awecell.game.quiz.logo.R;
+import com.awecell.game.quiz.category.logo.R;
 import com.awecell.game.quiz.logo.adapters.CustomAdapter;
 import com.awecell.game.quiz.logo.database.DbHelper;
 import com.awecell.game.quiz.logo.utils.ConstantValues;

@@ -14,7 +14,7 @@ public class ConstantValues {
 	public static final int NOT_ANSWERED = 0;
 	public static final String PROGRESS_DIAOLOG_TITLE = "Loading";
 	public static final String PROGRESS_DIALOG_MESSAGE = "Please wait...";
-	public static final String PACKAGE_NAME = "com.awecell.game.quiz.logo";
+	public static final String PACKAGE_NAME = "com.awecell.game.quiz.category.logo";
 	public static final String DRAWABLE = "drawable";
 	public static final String INTERSTITIAL_AD_LOADED = "mInterstitialAd loaded";
 	public static final String HINT1 = "hint1";

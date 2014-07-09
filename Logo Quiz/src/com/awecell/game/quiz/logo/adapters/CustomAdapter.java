@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.awecell.game.quiz.logo.R;
+import com.awecell.game.quiz.category.logo.R;
 import com.awecell.game.quiz.logo.utils.ConstantValues;
 
 public class CustomAdapter extends BaseAdapter{

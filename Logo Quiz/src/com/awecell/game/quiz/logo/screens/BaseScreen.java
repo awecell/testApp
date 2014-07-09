@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.awecell.game.quiz.logo.R;
+import com.awecell.game.quiz.category.logo.R;
 import com.awecell.game.quiz.logo.utils.ReferenceWrapper;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;

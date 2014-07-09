@@ -17,7 +17,7 @@ import com.awecell.game.quiz.logo.utils.ConstantValues;
 public class DbHelper extends SQLiteOpenHelper{
 
 
-	private static final String DATABASE_PATH = "//data/data/com.awecell.game.quiz.logo/databases/";
+	private static final String DATABASE_PATH = "//data/data/"+ConstantValues.PACKAGE_NAME+"/databases/";
 	private static final String DATABASE_NAME = "LogoQuiz.db";
 
 	private static final String KEY_ROWID = "_id";
