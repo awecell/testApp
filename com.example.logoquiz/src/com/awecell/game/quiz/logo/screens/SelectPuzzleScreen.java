@@ -6,58 +6,59 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.awecell.game.quiz.logo.R;
 import com.awecell.game.quiz.logo.adapters.CustomAdapter;
-import com.awecell.game.quiz.logo.database.DbOpenHelper;
-import com.awecell.game.quiz.logo.utils.ConstantClass;
-import com.awecell.game.quiz.logo.utils.SingletonClass;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
+import com.awecell.game.quiz.logo.database.DbHelper;
+import com.awecell.game.quiz.logo.utils.ConstantValues;
 
-public class LevelDetailScreen extends Activity implements OnItemClickListener{
+public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListener{
 	
-	private String levelName; 
+	private String categoryName; 
 	private GridView gridView;
-	private AdView adView;
-	private ArrayList<String> data = new ArrayList<String>();
+	private ArrayList<String> logoNameList = new ArrayList<String>();
+	private ArrayList<String> hint1List = new ArrayList<String>();
+	private ArrayList<String> hint2List = new ArrayList<String>();
 	private ArrayList<Integer> answeredList = new ArrayList<Integer>(); 
-	
 	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.level_detail_screen);
+		//setContentView(R.layout.level_detail_screen);
+		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View view = inflater.inflate(R.layout.puzzle_screen,null,false);
+		layoutForChildView.addView(view);
 		Intent intent = getIntent();
-		levelName = intent.getStringExtra("levelName");
-		((TextView)findViewById(R.id.levelName)).setText(levelName);
+		categoryName = intent.getStringExtra(ConstantValues.CATEGORY);
+		((TextView)findViewById(R.id.levelName)).setText(categoryName);
 		gridView = (GridView)findViewById(R.id.gridView);
 		gridView.setOnItemClickListener(this);
-		adsLoad();
+		
 	}
 	
 	
 	
 	private void getAnswerList() {
-		DbOpenHelper dbOpenHelper = new DbOpenHelper(LevelDetailScreen.this);
+		DbHelper dbOpenHelper = new DbHelper(SelectPuzzleScreen.this);
 		dbOpenHelper.open();
-		Cursor cursor = dbOpenHelper.getAnswerList(levelName);
+		Cursor cursor = dbOpenHelper.getAnswerList(categoryName);
 		cursor.moveToFirst();
 		answeredList.removeAll(answeredList);
 		while (!cursor.isAfterLast()) {
@@ -68,11 +69,7 @@ public class LevelDetailScreen extends Activity implements OnItemClickListener{
 		dbOpenHelper.close();
 	}
 
-	private void adsLoad() {
-		adView = new AdView(LevelDetailScreen.this);
-		LinearLayout adslayout = ((LinearLayout)(findViewById(R.id.addOnlevelDetailScreen)));
-		SingletonClass.getSingletonObject().getMyAdd().androidGmsAdsLoad(adView, adslayout, AdSize.BANNER);
-	}
+	
 	
 	@Override
 	protected void onStart() {
@@ -80,53 +77,40 @@ public class LevelDetailScreen extends Activity implements OnItemClickListener{
 		super.onStart();
 	}
 	
-	@Override
-	protected void onResume() {
-		if(adView!=null){
-			adView.resume();
-		}
-		super.onResume();
-	}
-	
-	
-	@Override
-	protected void onDestroy() {
-		if(adView!=null){
-			adView.destroy();
-		}
-		super.onDestroy();
-	}
-	
-	
-	@Override
-	protected void onPause() {
-		if(adView!=null){
-			adView.pause();
-		}
-		super.onPause();
-	}
-	
 	
 	
 	private void getData() {
 		AssetManager assetManager = this.getAssets();
+		InputStream inStream = null;
+		InputStreamReader file = null;
+		BufferedReader reader = null;
 		try {
-			InputStream inStream = assetManager.open(levelName+".txt");
-			InputStreamReader file = new InputStreamReader(inStream);
-			BufferedReader reader = new BufferedReader(file);
+			inStream = assetManager.open(categoryName+".txt");
+			file = new InputStreamReader(inStream);
+			reader = new BufferedReader(file);
 			String value = "#ff0000";
-			data.removeAll(data);
+			logoNameList.removeAll(logoNameList);
 			while (value!=null) {
 				value = reader.readLine();
+				
 				if(value!=null){
-					data.add(value);
+					String[] splitedValue = value.split("\\|\\|");
+					logoNameList.add(splitedValue[0]);
+					hint1List.add(splitedValue[1]);
+					hint2List.add(splitedValue[2]);
 				}
 			}
-			inStream.close();
-			file.close();
-			reader.close();
 		} catch (IOException e) {
+			Log.e("",ConstantValues.IO_EXCEPTION);
 			e.printStackTrace();       
+		}finally{
+			try {
+				inStream.close();
+				file.close();
+				reader.close();			
+			} catch (IOException e) {
+				Log.e("",ConstantValues.IO_EXCEPTION);
+			}
 		}
 	}
 	
@@ -136,10 +120,12 @@ public class LevelDetailScreen extends Activity implements OnItemClickListener{
 		
 		Bitmap bitmap = ((ImageView)view.findViewById(R.id.imageViewOnGrid)).getDrawingCache();
 		Intent intent = new Intent(this, GameScreen.class);
-		intent.putExtra(ConstantClass.LEVEL_NAME, levelName);
-		intent.putExtra(ConstantClass.IMAGE, bitmap);
-		intent.putExtra(ConstantClass.ANSWER, data.get(position));
-		intent.putExtra(ConstantClass.POSITION,++position);
+		intent.putExtra(ConstantValues.CATEGORY, categoryName);
+		intent.putExtra(ConstantValues.IMAGE, bitmap);
+		intent.putExtra(ConstantValues.ANSWER, logoNameList.get(position));
+		intent.putExtra(ConstantValues.HINT1, hint1List.get(position));
+		intent.putExtra(ConstantValues.HINT2, hint2List.get(position));
+		intent.putExtra(ConstantValues.POSITION,++position);
 		startActivity(intent);
 		
 	}
@@ -151,9 +137,9 @@ public class LevelDetailScreen extends Activity implements OnItemClickListener{
 		
 		@Override
 		protected void onPreExecute() {
-			progressDialog = new ProgressDialog(LevelDetailScreen.this);
-			progressDialog.setTitle(ConstantClass.PROGRESS_DIAOLOG_TITLE);
-			progressDialog.setMessage(ConstantClass.PROGRESS_DIALOG_MESSAGE);
+			progressDialog = new ProgressDialog(SelectPuzzleScreen.this);
+			progressDialog.setTitle(ConstantValues.PROGRESS_DIAOLOG_TITLE);
+			progressDialog.setMessage(ConstantValues.PROGRESS_DIALOG_MESSAGE);
 			progressDialog.setCanceledOnTouchOutside(false);
 			progressDialog.setCancelable(false);
 			progressDialog.show();
@@ -175,7 +161,7 @@ public class LevelDetailScreen extends Activity implements OnItemClickListener{
 				
 				@Override
 				public void run() {
-					gridView.setAdapter(new CustomAdapter(LevelDetailScreen.this,data,answeredList));
+					gridView.setAdapter(new CustomAdapter(SelectPuzzleScreen.this,logoNameList,answeredList));
 				}
 			});
 			super.onPostExecute(result);

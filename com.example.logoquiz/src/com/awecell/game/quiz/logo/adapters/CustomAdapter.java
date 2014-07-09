@@ -10,7 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.awecell.game.quiz.logo.R;
-import com.awecell.game.quiz.logo.utils.ConstantClass;
+import com.awecell.game.quiz.logo.utils.ConstantValues;
 
 public class CustomAdapter extends BaseAdapter{
 
@@ -41,6 +41,17 @@ public class CustomAdapter extends BaseAdapter{
 
 		return position;
 	}
+	
+	@Override
+	public boolean isEnabled(int position) {
+		if(position==0){
+			return true;
+		}else if(answeredList.get(position-1)==ConstantValues.ANSWERED){
+			return true;
+		}else{
+			return false;
+		}
+	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -51,14 +62,23 @@ public class CustomAdapter extends BaseAdapter{
 
 		ImageView imageView = (ImageView)convertView.findViewById(R.id.imageViewOnGrid);
 		// getting resource id of image in drawable folder
-		int resId = context.getResources().getIdentifier(data.get(position), "drawable", "com.awecell.game.quiz.logo");
+		int resId = context.getResources().getIdentifier(data.get(position),ConstantValues.DRAWABLE, ConstantValues.PACKAGE_NAME);
 		imageView.setBackgroundResource(resId);
 		imageView.setDrawingCacheEnabled(true);
-
+		
+		//initial puzzle will be unlocked
+              if(position == 0){
+            	  ((ImageView)convertView.findViewById(R.id.lockImage)).setVisibility(View.GONE);
+              }else if(answeredList.get(position-1)==ConstantValues.ANSWERED){
+            	  ((ImageView)convertView.findViewById(R.id.lockImage)).setVisibility(View.GONE);
+              }
+		
+		
 		//checking whether this logo is answered or not 
-			if(answeredList.get(position)==ConstantClass.ANSWERED){
+			if(answeredList.get(position)==ConstantValues.ANSWERED){
 				((ImageView)convertView.findViewById(R.id.tickImage)).setVisibility(View.VISIBLE);
 			}
+			
 		return convertView;
 	}
 

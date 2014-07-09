@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LevelDetailScreen" >
+    tools:context=".SelectPuzzleScreee" >
     
     <LinearLayout 
         android:id="@+id/titleBarOnLevelDetail"
@@ -27,11 +27,5 @@
         android:numColumns="4"
         android:verticalSpacing="5dp"
         android:horizontalSpacing="5dp"/>
-    
-    <LinearLayout 
-        android:id="@+id/addOnlevelDetailScreen"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="vertical"/>
 
 </RelativeLayout>

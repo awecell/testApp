@@ -4,21 +4,21 @@ import android.app.Activity;
 import android.util.Log;
 import android.view.ViewGroup;
 
+import com.awecell.game.quiz.logo.utils.ConstantValues;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 
-public class MyAdd {
+public class CustomAd {
 
-	Activity context ;
-
-
+	
 	public void androidGmsAdsLoad(AdView adView,ViewGroup adslayout,AdSize adSize) {
+		adView.setAdUnitId("B3EEABB8EE11C2BE770B684D95219ECB");
+		//AdRequest adRequest = new AdRequest.Builder().build();
+		AdRequest adRequest = new AdRequest.Builder().addTestDevice("B3EEABB8EE11C2BE770B684D95219ECB").build();
 		adView.setAdSize(adSize);
-		adView.setAdUnitId(StoreType.admob_id_small);
-		AdRequest adRequest = new AdRequest.Builder().build();
 		adView.loadAd(adRequest);
 		adslayout.addView(adView);
 	}
@@ -37,7 +37,7 @@ public class MyAdd {
 			 
 			 @Override
 			public void onAdLoaded() {
-				 Log.e("","mInterstitialAd loaded");
+				 Log.e("",ConstantValues.INTERSTITIAL_AD_LOADED);
 				super.onAdLoaded();
 			}
 			 

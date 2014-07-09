@@ -4,21 +4,18 @@
     <string name="app_name">logoquiz</string>
     <string name="action_settings">Settings</string>
     <string name="play">Play</string>
-    <string name="levels">Levels</string>
+    <string name="levels">Categories</string>
     <string name="level1">Level 1</string>
     <string name="level2">Level 2</string>
     <string name="level3">Level 3</string>
     <string name="level4">Level 4</string>
     <string name="level5">Level 5</string>
-    <string name="level6">Level 6</string>
-    <string name="level7">Level 7</string>
-    <string name="level8">Level 8</string>
-    <string name="level9">Level 9</string>
-    <string name="level10">Level 10</string>
     <string name="title_activity_level_screen">Level_screen</string>
     <string name="title_activity_level_detail_screen">LevelDetailScreen</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_game_screen">GameScreen</string>
     <string name="check">Check</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
 
 </resources>

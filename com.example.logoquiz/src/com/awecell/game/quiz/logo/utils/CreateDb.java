@@ -3,7 +3,7 @@ package com.awecell.game.quiz.logo.utils;
 import android.content.Context;
 import android.os.Handler;
 
-import com.awecell.game.quiz.logo.database.DbOpenHelper;
+import com.awecell.game.quiz.logo.database.DbHelper;
 
 public class CreateDb implements Runnable{
 	
@@ -20,9 +20,9 @@ public class CreateDb implements Runnable{
 
 	@Override
 	public void run() {
-		DbOpenHelper dbOpenHelper = new DbOpenHelper(context);
-		dbOpenHelper.createDatabase();
-		dbOpenHelper.close();
+		DbHelper dbHelper = new DbHelper(context);
+		dbHelper.createDatabase();
+		dbHelper.close();
 	}
 
 }

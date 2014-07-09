@@ -5,93 +5,65 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.awecell.game.quiz.logo.R;
-import com.awecell.game.quiz.logo.utils.ConstantClass;
-import com.awecell.game.quiz.logo.utils.SingletonClass;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
+import com.awecell.game.quiz.logo.utils.ConstantValues;
+import com.awecell.game.quiz.logo.utils.CreateDb;
 
-public class LevelScreen extends Activity implements OnClickListener{
+public class CategoryScreen extends BaseScreen implements OnClickListener{
 
 	private int screenWidth;
 	private int screenHeight;
-	private AdView adView;
 	private LinearLayout layoutForLevels;
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.level_screen);
-
+		// adding category screen to BaseScreen
+		LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View view = inflator.inflate(R.layout.category_screen, null,false);
+        layoutForChildView.addView(view);
+        
+        
 		screenWidth = getResources().getDisplayMetrics().widthPixels;
 		screenHeight = getResources().getDisplayMetrics().heightPixels;
 		layoutForLevels = ((LinearLayout)findViewById(R.id.layoutForLevels));
-		createLevels();
-		adsLoad();
+		createCategories();
+		CreateDb createDb = new CreateDb(this);
+        createDb.start();
 	}
-	
-	
-	private void adsLoad() {
-		adView = new AdView(LevelScreen.this);
-		LinearLayout adslayout = ((LinearLayout)(findViewById(R.id.addOnLevelScreen)));
-		SingletonClass.getSingletonObject().getMyAdd().androidGmsAdsLoad(adView, adslayout, AdSize.BANNER);
-	}
-	
-	
-	@Override
-	protected void onResume() {
-		if(adView!=null){
-			adView.resume();
-		}
-		super.onResume();
-	}
-	
-	
-	@Override
-	protected void onDestroy() {
-		if(adView!=null){
-			adView.destroy();
-		}
-		super.onDestroy();
-	}
-	
-	
-	@Override
-	protected void onPause() {
-		if(adView!=null){
-			adView.pause();
-		}
-		super.onPause();
-	}
-	
 	
 
-	private void createLevels() {
+	private void createCategories() {
 		AssetManager assetManager = this.getAssets();
+		InputStream inStream  = null;
+		InputStreamReader file = null;
+		BufferedReader reader = null;
 		try {
-			InputStream inStream = assetManager.open("levels.txt");
-			InputStreamReader file = new InputStreamReader(inStream);
-			BufferedReader reader = new BufferedReader(file);
-			String level = "level1";
-			while (level!=null) {
-				level = reader.readLine();
-				if(level!=null){
+			inStream = assetManager.open(ConstantValues.CATEGORY+ConstantValues.FILE_EXTENSION);
+			file = new InputStreamReader(inStream);
+			reader = new BufferedReader(file);
+			String category = ConstantValues.CATEGORY;
+			while (category!=null) {
+				category = reader.readLine();
+				if(category!=null){
 					TextView levelText = new TextView(this);
 					levelText.setOnClickListener(this);
 					levelText.setGravity(Gravity.CENTER);
-					levelText.setText(level);
+					levelText.setText(category);
 					levelText.setBackgroundColor(Color.YELLOW);
 					int width = (int) (screenWidth*0.78f);
 					int height = (int) (screenHeight*0.208f);
@@ -99,11 +71,17 @@ public class LevelScreen extends Activity implements OnClickListener{
 					layoutForLevels.addView(levelText);
 				} 
 			}
-			inStream.close();
-			file.close();
-			reader.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e("",ConstantValues.IO_EXCEPTION);
+		}finally{
+			
+			try {
+				inStream.close();
+				file.close();
+				reader.close();
+			} catch (IOException e) {
+				Log.e("",ConstantValues.IO_EXCEPTION);
+			}
 		}
 	}
 	
@@ -119,9 +97,9 @@ public class LevelScreen extends Activity implements OnClickListener{
 
 	@Override
 	public void onClick(View view) {
-		String level = ((TextView)view).getText().toString();
-		Intent intent = new Intent(this, LevelDetailScreen.class);
-		intent.putExtra(ConstantClass.LEVEL_NAME, level);
+		String categoryName = ((TextView)view).getText().toString();
+		Intent intent = new Intent(this, SelectPuzzleScreen.class);
+		intent.putExtra(ConstantValues.CATEGORY, categoryName);
 		startActivity(intent);
 	}
 

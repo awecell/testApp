@@ -33,12 +33,4 @@
             android:orientation="vertical" >
         </LinearLayout>
     </ScrollView>
-    
-    <LinearLayout 
-        android:id="@+id/addOnLevelScreen"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"/>
-
 </RelativeLayout>

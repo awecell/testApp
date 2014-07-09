@@ -3,19 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Home_screen" >
-
-    <Button
-        android:id="@+id/playButton"
+    
+    <RelativeLayout 
+        android:id="@+id/layoutForChildView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/play"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_height="match_parent"/>
     
     <LinearLayout 
         android:id="@+id/addOnHomeScreen"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:background="#80000000"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"/>
 

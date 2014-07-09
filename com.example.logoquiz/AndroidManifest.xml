@@ -18,20 +18,21 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         <activity
-            android:name="com.awecell.game.quiz.logo.screens.HomeScreen"
+            android:name="com.awecell.game.quiz.logo.screens.BaseScreen"
             android:label="@string/app_name" >
-            <intent-filter>
+           
+        </activity>
+        <activity
+            android:name="com.awecell.game.quiz.logo.screens.CategoryScreen"
+            android:label="@string/title_activity_level_screen" >
+             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.awecell.game.quiz.logo.screens.LevelScreen"
-            android:label="@string/title_activity_level_screen" >
-        </activity>
-        <activity
-            android:name="com.awecell.game.quiz.logo.screens.LevelDetailScreen"
+            android:name="com.awecell.game.quiz.logo.screens.SelectPuzzleScreen"
             android:label="@string/title_activity_level_detail_screen" >
         </activity>
         <activity
