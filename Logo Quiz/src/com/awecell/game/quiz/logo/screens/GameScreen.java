@@ -3,8 +3,10 @@ package com.awecell.game.quiz.logo.screens;
 import java.util.ArrayList;
 import java.util.Random;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.InputType;
@@ -35,10 +37,16 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 	private int rowId;
 	private String hintDetail1;
 	private String hintDetail2;
+	private Dialog dialog;
+	
+	private int total_hint = 0;
+	private int total_score = 0;
 
 
 	private boolean isHintLayoutOpen = false;
-	private boolean isHintDetail1ToUse ;
+	private int hint_state;
+	
+	private SharedPreferences preferences;
 
 
 	@Override
@@ -51,7 +59,15 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 
 		logoView = ((ImageView)findViewById(R.id.imageViewOnGameScreen));
 		userInputEditText = ((EditText)findViewById(R.id.userInputEditText));
-
+		
+		preferences = getSharedPreferences(ConstantValues.PACKAGE_NAME,MODE_PRIVATE);
+		
+		total_hint = preferences.getInt(ConstantValues.HINT, ConstantValues.INITIAL_HINT);
+		total_score = preferences.getInt(ConstantValues.SCORE, 0);
+         
+		dialog = new Dialog(this);
+		dialog.setContentView(R.layout.alert_layout);
+		dialog.setCanceledOnTouchOutside(false);
 
 		// getting data from intent
 		Intent intent = getIntent();
@@ -73,7 +89,22 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 
 		((Button)findViewById(R.id.okHintBtn)).setOnClickListener(this);
 
-
+	}
+	
+	@Override
+	protected void onDestroy() {
+		if(dialog!=null){
+			dialog.dismiss();
+		}
+		super.onDestroy();
+	}
+	
+	public void showAlertBeforeUsingHint(String title,int hintCost){
+		dialog.setTitle(title);
+		dialog.show();
+		((TextView)dialog.findViewById(R.id.alertText)).setText(ConstantValues.COST+hintCost+ConstantValues.HINT);
+		((Button)dialog.findViewById(R.id.alertCancel)).setOnClickListener(this);
+		((Button)dialog.findViewById(R.id.alertOk)).setOnClickListener(this);
 	}
 
 
@@ -84,6 +115,8 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		case R.id.checkAnswerButton:
 			if(isAnswerRight()){
 				doShakeAnimation();
+				total_score++;
+				preferences.edit().putInt(ConstantValues.SCORE,total_score).commit();
 				UpdateDb updateDb = new UpdateDb(this, categoryName, ConstantValues.ANSWERED, rowId);
 				updateDb.start();
 			}
@@ -94,22 +127,48 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 			break;
 		case R.id.hint1:
 			//jumble keypad
-			getHint1();
+			hint_state = ConstantValues.JUMBLE_HINT_STATE;
+			showAlertBeforeUsingHint(ConstantValues.ABOUT_JUMBLE_HINT, ConstantValues.JUMBLE_HINT_COST);
 			break;
 		case R.id.hint2:
-			// hint detai 1
-			isHintDetail1ToUse = true;
-			moveDownHintLayout();
+			// hint detail 1
+			hint_state = ConstantValues.HINT1_STATE;
+			showAlertBeforeUsingHint(ConstantValues.ABOUT_HINT, ConstantValues.HINT1_COST);
 			break;
 		case R.id.hint3:
-			//hintr detail2
-			isHintDetail1ToUse = false;
-			moveDownHintLayout();
+			//hint detail2
+			hint_state = ConstantValues.HINT2_STATE;
+			showAlertBeforeUsingHint(ConstantValues.ABOUT_HINT, ConstantValues.HINT2_COST);
 			break;
 		case R.id.okHintBtn:
 			//close hint layout
 			moveUpHintLayout();
 			break;
+		case R.id.alertCancel:
+			dialog.hide();
+			break;
+		case R.id.alertOk:
+			switch (hint_state) {
+			case ConstantValues.JUMBLE_HINT_STATE:
+				dialog.hide();
+				getJumbledKeyPad();
+				total_hint -= ConstantValues.JUMBLE_HINT_COST;
+				preferences.edit().putInt(ConstantValues.HINT, total_hint);
+				break;
+			case ConstantValues.HINT1_STATE:
+				dialog.hide();
+				total_hint -= ConstantValues.HINT1_COST;
+				preferences.edit().putInt(ConstantValues.HINT, total_hint);
+				moveDownHintLayout();
+				break;
+			case ConstantValues.HINT2_STATE:
+				dialog.hide();
+				total_hint -= ConstantValues.HINT2_COST;
+				preferences.edit().putInt(ConstantValues.HINT, total_hint);
+				moveDownHintLayout();
+				break;
+			}
+		    break;
 
 		default:
 			// getting text from jumbled keypad and setting it on edit text
@@ -119,6 +178,7 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		}
 
 	}
+	
 
 	private void moveDownHintLayout(){
 		TranslateAnimation trAnimation = new TranslateAnimation(0,0,-450, 0);
@@ -134,7 +194,7 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		((RelativeLayout)findViewById(R.id.fakeHintLayout)).startAnimation(trAnimation);
 	}
 
-	private void getHint1(){
+	private void getJumbledKeyPad(){
 		userInputEditText.setInputType(InputType.TYPE_NULL);
 		LinearLayout keypadFirstRow = ((LinearLayout)findViewById(R.id.keyPadFirstRow));
 		LinearLayout KeypadSecondRow = ((LinearLayout)findViewById(R.id.keyPadSecondRow));
@@ -184,6 +244,26 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		TranslateAnimation shakeAnimation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0.1f, Animation.RELATIVE_TO_SELF, -0.1f, Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0);
 		shakeAnimation.setRepeatCount(10);
 		shakeAnimation.setRepeatMode(Animation.REVERSE);
+		shakeAnimation.setAnimationListener(new AnimationListener() {
+			
+			@Override
+			public void onAnimationStart(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationRepeat(Animation animation) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onAnimationEnd(Animation animation) {
+				GameScreen.this.finish();
+				
+			}
+		});
 		logoView.startAnimation(shakeAnimation);
 	}
 
@@ -211,7 +291,7 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 	@Override
 	public void onAnimationStart(Animation animation) {
 		if(!isHintLayoutOpen){
-			if(isHintDetail1ToUse){         // checking which hint detail text to use
+			if(hint_state==ConstantValues.HINT1_STATE){         // checking which hint detail text to use
 				((TextView)findViewById(R.id.fakehintTxtView)).setText(hintDetail1);
 				((TextView)findViewById(R.id.hintTxtView)).setText(hintDetail1);
 			}else{
@@ -232,6 +312,16 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		((Button)findViewById(R.id.hint1)).setEnabled(isEnable);
 		((Button)findViewById(R.id.hint2)).setEnabled(isEnable);
 		((Button)findViewById(R.id.hint3)).setEnabled(isEnable);
+	}
+	
+	
+	protected void googleleaderBoard() {
+		beginUserInitiatedSignIn();
+		if(isSignedIn()){
+			total_score = preferences.getInt(ConstantValues.SCORE, 0);
+			Games.Leaderboards.submitScore(getApiClient(), ConstantValues.LEADERBOARD_ID,total_score);
+			startActivityForResult(Games.Leaderboards.getLeaderboardIntent(getApiClient(), ConstantValues.LEADERBOARD_ID), 9002);
+		}
 	}
 
 

@@ -1,17 +1,20 @@
 package com.awecell.game.quiz.logo.screens;
 
-import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.awecell.game.quiz.category.logo.R;
+import com.awecell.game.quiz.logo.utils.ConstantValues;
 import com.awecell.game.quiz.logo.utils.ReferenceWrapper;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.games.Games;
+import com.google.example.games.basegameutils.BaseGameActivity;
 
-public class BaseScreen extends Activity {
+public class BaseScreen extends BaseGameActivity {
 	private InterstitialAd interstitialAd;
 	private AdView adView;
 	protected RelativeLayout layoutForChildView;
@@ -67,6 +70,20 @@ public class BaseScreen extends Activity {
 	protected void onPause() {
 		adView.pause();
 		super.onPause();
+	}
+
+
+	@Override
+	public void onSignInFailed() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void onSignInSucceeded() {
+		// TODO Auto-generated method stub
+		
 	}    
 
 }

@@ -18,5 +18,6 @@
     <string name="check">Check</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
+    <string name="app_id">12345</string>
 
 </resources>

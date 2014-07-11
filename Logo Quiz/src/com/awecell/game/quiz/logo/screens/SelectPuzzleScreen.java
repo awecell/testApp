@@ -9,11 +9,13 @@ import java.util.ArrayList;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,14 +31,14 @@ import com.awecell.game.quiz.logo.database.DbHelper;
 import com.awecell.game.quiz.logo.utils.ConstantValues;
 
 public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListener{
-	
+
 	private String categoryName; 
 	private GridView gridView;
 	private ArrayList<String> logoNameList = new ArrayList<String>();
 	private ArrayList<String> hint1List = new ArrayList<String>();
 	private ArrayList<String> hint2List = new ArrayList<String>();
 	private ArrayList<Integer> answeredList = new ArrayList<Integer>(); 
-	
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +52,11 @@ public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListene
 		((TextView)findViewById(R.id.levelName)).setText(categoryName);
 		gridView = (GridView)findViewById(R.id.gridView);
 		gridView.setOnItemClickListener(this);
-		
+
 	}
-	
-	
-	
+
+
+
 	private void getAnswerList() {
 		DbHelper dbOpenHelper = new DbHelper(SelectPuzzleScreen.this);
 		dbOpenHelper.open();
@@ -63,22 +65,22 @@ public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListene
 		answeredList.removeAll(answeredList);
 		while (!cursor.isAfterLast()) {
 			answeredList.add(cursor.getInt(0));
-	        cursor.moveToNext();
+			cursor.moveToNext();
 		}
 		cursor.close();
 		dbOpenHelper.close();
 	}
 
-	
-	
+
+
 	@Override
 	protected void onStart() {
 		new ImageLoadingTask().execute();
 		super.onStart();
 	}
-	
-	
-	
+
+
+
 	private void getData() {
 		AssetManager assetManager = this.getAssets();
 		InputStream inStream = null;
@@ -92,7 +94,7 @@ public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListene
 			logoNameList.removeAll(logoNameList);
 			while (value!=null) {
 				value = reader.readLine();
-				
+
 				if(value!=null){
 					String[] splitedValue = value.split("\\|\\|");
 					logoNameList.add(splitedValue[0]);
@@ -113,11 +115,11 @@ public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListene
 			}
 		}
 	}
-	
+
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		
+
 		Bitmap bitmap = ((ImageView)view.findViewById(R.id.imageViewOnGrid)).getDrawingCache();
 		Intent intent = new Intent(this, GameScreen.class);
 		intent.putExtra(ConstantValues.CATEGORY, categoryName);
@@ -127,14 +129,14 @@ public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListene
 		intent.putExtra(ConstantValues.HINT2, hint2List.get(position));
 		intent.putExtra(ConstantValues.POSITION,++position);
 		startActivity(intent);
-		
+
 	}
-	
-	
+
+
 	private class ImageLoadingTask extends AsyncTask<Void, Void, Void>{
-		
+
 		private ProgressDialog progressDialog;
-		
+
 		@Override
 		protected void onPreExecute() {
 			progressDialog = new ProgressDialog(SelectPuzzleScreen.this);
@@ -152,13 +154,13 @@ public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListene
 			getAnswerList();
 			return null;
 		}
-		
-		
+
+
 		@Override
 		protected void onPostExecute(Void result) {
 			progressDialog.cancel();
 			runOnUiThread(new Runnable() {
-				
+
 				@Override
 				public void run() {
 					gridView.setAdapter(new CustomAdapter(SelectPuzzleScreen.this,logoNameList,answeredList));
@@ -166,8 +168,7 @@ public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListene
 			});
 			super.onPostExecute(result);
 		}
-		
+
 	}
-
-
+	
 }
