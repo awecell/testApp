@@ -17,8 +17,8 @@ public class ConstantValues {
 	public static final String PACKAGE_NAME = "com.awecell.game.quiz.category.logo";
 	public static final String DRAWABLE = "drawable";
 	public static final String INTERSTITIAL_AD_LOADED = "mInterstitialAd loaded";
-	public static final String HINT1 = "hint1";
-	public static final String HINT2 = "hint2";
+	public static final String HINT1_TEXT = "hint1";
+	public static final String HINT2_TEXT = "hint2";
 	public static final String LEADERBOARD_ID = "abcd";
 	public static final String SCORE = "Score";
 	public static final String ABOUT_HINT = "Shows clue sentence of the answer!";
@@ -29,8 +29,10 @@ public class ConstantValues {
 	public static final String COST = "Cost: ";
 	public static final String HINT = "Hint";
 	public static final int INITIAL_HINT = 5;
-	public static final int JUMBLE_HINT_STATE = 1;
-	public static final int HINT1_STATE = 2;
-	public static final int HINT2_STATE = 3;
-
+	public static final int JUMBLE_HINT = 1;
+	public static final int HINT1 = 2;
+	public static final int HINT2 = 3;
+	public static final String NO_HINT_STATEMENT = "You have no hint left";
+	public static final int USED_HINT = 4;
+	public static final int UNUSED_HINT = 5;
 }

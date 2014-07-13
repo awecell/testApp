@@ -1,17 +1,14 @@
 package com.awecell.game.quiz.logo.screens;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.awecell.game.quiz.category.logo.R;
-import com.awecell.game.quiz.logo.utils.ConstantValues;
 import com.awecell.game.quiz.logo.utils.ReferenceWrapper;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameActivity;
 
 public class BaseScreen extends BaseGameActivity {

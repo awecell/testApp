@@ -27,25 +27,30 @@ import android.widget.Toast;
 import com.awecell.game.quiz.category.logo.R;
 import com.awecell.game.quiz.logo.utils.ConstantValues;
 import com.awecell.game.quiz.logo.utils.UpdateDb;
+import com.google.android.gms.games.Games;
 
 public class GameScreen extends BaseScreen implements OnClickListener,AnimationListener{
 
 	private ImageView logoView;
 	private String answer;
 	private EditText userInputEditText;
+	private TextView hintText;
 	private String categoryName ;
 	private int rowId;
 	private String hintDetail1;
 	private String hintDetail2;
 	private Dialog dialog;
-	
+
 	private int total_hint = 0;
 	private int total_score = 0;
 
+	private Button jumbleHintButton ;
+	private Button hint1Button;
+	private Button hint2Button;
+
 
 	private boolean isHintLayoutOpen = false;
-	private int hint_state;
-	
+	private int hint_name;
 	private SharedPreferences preferences;
 
 
@@ -59,12 +64,14 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 
 		logoView = ((ImageView)findViewById(R.id.imageViewOnGameScreen));
 		userInputEditText = ((EditText)findViewById(R.id.userInputEditText));
-		
+		hintText = ((TextView)findViewById(R.id.noOfHintView));
+		hintText.setText(ConstantValues.HINT+" : "+total_hint);
+
 		preferences = getSharedPreferences(ConstantValues.PACKAGE_NAME,MODE_PRIVATE);
-		
+
 		total_hint = preferences.getInt(ConstantValues.HINT, ConstantValues.INITIAL_HINT);
 		total_score = preferences.getInt(ConstantValues.SCORE, 0);
-         
+
 		dialog = new Dialog(this);
 		dialog.setContentView(R.layout.alert_layout);
 		dialog.setCanceledOnTouchOutside(false);
@@ -75,22 +82,27 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		rowId = intent.getIntExtra(ConstantValues.POSITION, 0);
 		Bitmap logo = intent.getParcelableExtra(ConstantValues.IMAGE);
 		answer = intent.getStringExtra(ConstantValues.ANSWER);
-		hintDetail1 = intent.getStringExtra(ConstantValues.HINT1);
-		hintDetail2 = intent.getStringExtra(ConstantValues.HINT2);
+		hintDetail1 = intent.getStringExtra(ConstantValues.HINT1_TEXT);
+		hintDetail2 = intent.getStringExtra(ConstantValues.HINT2_TEXT);
 
 		logoView.setImageBitmap(logo);
 		((Button)findViewById(R.id.checkAnswerButton)).setOnClickListener(this);
-		((Button)findViewById(R.id.hint1)).setOnClickListener(this);
-		((Button)findViewById(R.id.hint2)).setOnClickListener(this);
-		((Button)findViewById(R.id.hint3)).setOnClickListener(this);
-		((Button)findViewById(R.id.hint4)).setOnClickListener(this);
-		((Button)findViewById(R.id.hint5)).setOnClickListener(this);
-		((Button)findViewById(R.id.hint6)).setOnClickListener(this);
 
+		jumbleHintButton  = ((Button)findViewById(R.id.hint1));
+		hint1Button = ((Button)findViewById(R.id.hint2));
+		hint2Button = ((Button)findViewById(R.id.hint3));
+
+		jumbleHintButton.setOnClickListener(this);
+		hint1Button.setOnClickListener(this);
+		hint2Button.setOnClickListener(this);
+
+		jumbleHintButton.setTag(ConstantValues.UNUSED_HINT);
+		hint1Button.setTag(ConstantValues.UNUSED_HINT);
+		hint2Button.setTag(ConstantValues.UNUSED_HINT);
 		((Button)findViewById(R.id.okHintBtn)).setOnClickListener(this);
 
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		if(dialog!=null){
@@ -98,7 +110,7 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		}
 		super.onDestroy();
 	}
-	
+
 	public void showAlertBeforeUsingHint(String title,int hintCost){
 		dialog.setTitle(title);
 		dialog.show();
@@ -127,18 +139,48 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 			break;
 		case R.id.hint1:
 			//jumble keypad
-			hint_state = ConstantValues.JUMBLE_HINT_STATE;
-			showAlertBeforeUsingHint(ConstantValues.ABOUT_JUMBLE_HINT, ConstantValues.JUMBLE_HINT_COST);
+			total_hint = preferences.getInt(ConstantValues.HINT,5);
+			int state = Integer.parseInt(jumbleHintButton.getTag().toString());
+			if(state==ConstantValues.UNUSED_HINT){
+				if(total_hint>0){
+					hint_name = ConstantValues.JUMBLE_HINT;
+					showAlertBeforeUsingHint(ConstantValues.ABOUT_JUMBLE_HINT, ConstantValues.JUMBLE_HINT_COST);
+				}else{
+					Toast.makeText(this,ConstantValues.NO_HINT_STATEMENT,Toast.LENGTH_SHORT).show();
+				}
+			}else{
+				getJumbledKeyPad();
+			}
 			break;
 		case R.id.hint2:
 			// hint detail 1
-			hint_state = ConstantValues.HINT1_STATE;
-			showAlertBeforeUsingHint(ConstantValues.ABOUT_HINT, ConstantValues.HINT1_COST);
+			total_hint = preferences.getInt(ConstantValues.HINT,5);
+			state = Integer.parseInt(hint1Button.getTag().toString());
+			if(state==ConstantValues.UNUSED_HINT){
+				if(total_hint>0){
+					hint_name = ConstantValues.HINT1;
+					showAlertBeforeUsingHint(ConstantValues.ABOUT_HINT, ConstantValues.HINT1_COST);
+				}else{
+					Toast.makeText(this,ConstantValues.NO_HINT_STATEMENT,Toast.LENGTH_SHORT).show();
+				}
+			}else{
+				moveDownHintLayout();
+			}
 			break;
 		case R.id.hint3:
 			//hint detail2
-			hint_state = ConstantValues.HINT2_STATE;
-			showAlertBeforeUsingHint(ConstantValues.ABOUT_HINT, ConstantValues.HINT2_COST);
+			total_hint = preferences.getInt(ConstantValues.HINT,5);
+			state = Integer.parseInt(hint2Button.getTag().toString());
+			if(state==ConstantValues.UNUSED_HINT){
+				if(total_hint>0){
+					hint_name = ConstantValues.HINT2;
+					showAlertBeforeUsingHint(ConstantValues.ABOUT_HINT, ConstantValues.HINT2_COST);
+				}else{
+					Toast.makeText(this,ConstantValues.NO_HINT_STATEMENT,Toast.LENGTH_SHORT).show();
+				}
+			}else{
+				moveDownHintLayout();
+			}
 			break;
 		case R.id.okHintBtn:
 			//close hint layout
@@ -148,27 +190,33 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 			dialog.hide();
 			break;
 		case R.id.alertOk:
-			switch (hint_state) {
-			case ConstantValues.JUMBLE_HINT_STATE:
+			switch (hint_name) {
+			case ConstantValues.JUMBLE_HINT:
 				dialog.hide();
 				getJumbledKeyPad();
 				total_hint -= ConstantValues.JUMBLE_HINT_COST;
-				preferences.edit().putInt(ConstantValues.HINT, total_hint);
+				preferences.edit().putInt(ConstantValues.HINT, total_hint).commit();
+				jumbleHintButton.setTag(ConstantValues.USED_HINT);
+				hintText.setText(ConstantValues.HINT+" : "+total_hint);
 				break;
-			case ConstantValues.HINT1_STATE:
+			case ConstantValues.HINT1:
 				dialog.hide();
 				total_hint -= ConstantValues.HINT1_COST;
-				preferences.edit().putInt(ConstantValues.HINT, total_hint);
+				preferences.edit().putInt(ConstantValues.HINT, total_hint).commit();
 				moveDownHintLayout();
+				hint1Button.setTag(ConstantValues.USED_HINT);
+				hintText.setText(ConstantValues.HINT+" : "+total_hint);
 				break;
-			case ConstantValues.HINT2_STATE:
+			case ConstantValues.HINT2:
 				dialog.hide();
 				total_hint -= ConstantValues.HINT2_COST;
-				preferences.edit().putInt(ConstantValues.HINT, total_hint);
+				preferences.edit().putInt(ConstantValues.HINT, total_hint).commit();
 				moveDownHintLayout();
+				hint2Button.setTag(ConstantValues.USED_HINT);
+				hintText.setText(ConstantValues.HINT+" : "+total_hint);
 				break;
 			}
-		    break;
+			break;
 
 		default:
 			// getting text from jumbled keypad and setting it on edit text
@@ -178,7 +226,7 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		}
 
 	}
-	
+
 
 	private void moveDownHintLayout(){
 		TranslateAnimation trAnimation = new TranslateAnimation(0,0,-450, 0);
@@ -198,7 +246,7 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		userInputEditText.setInputType(InputType.TYPE_NULL);
 		LinearLayout keypadFirstRow = ((LinearLayout)findViewById(R.id.keyPadFirstRow));
 		LinearLayout KeypadSecondRow = ((LinearLayout)findViewById(R.id.keyPadSecondRow));
-         
+
 		keypadFirstRow.removeAllViews();
 		KeypadSecondRow.removeAllViews();
 
@@ -211,8 +259,8 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 
 		for(int i =0;i<answer.length();i++){
 			Button btn = new Button(this);
-            btn.setOnClickListener(this);
-			
+			btn.setOnClickListener(this);
+
 			// getting random number and using it to set answer button in jumbled way
 			int index = new Random().nextInt(randomNumberList.size());
 			btn.setText(""+answer.charAt(randomNumberList.get(index)));
@@ -224,7 +272,7 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 			else
 				KeypadSecondRow.addView(btn);
 		}
-		
+
 	}
 
 
@@ -245,23 +293,23 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		shakeAnimation.setRepeatCount(10);
 		shakeAnimation.setRepeatMode(Animation.REVERSE);
 		shakeAnimation.setAnimationListener(new AnimationListener() {
-			
+
 			@Override
 			public void onAnimationStart(Animation animation) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void onAnimationRepeat(Animation animation) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void onAnimationEnd(Animation animation) {
 				GameScreen.this.finish();
-				
+
 			}
 		});
 		logoView.startAnimation(shakeAnimation);
@@ -291,7 +339,7 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 	@Override
 	public void onAnimationStart(Animation animation) {
 		if(!isHintLayoutOpen){
-			if(hint_state==ConstantValues.HINT1_STATE){         // checking which hint detail text to use
+			if(hint_name==ConstantValues.HINT1){         // checking which hint detail text to use
 				((TextView)findViewById(R.id.fakehintTxtView)).setText(hintDetail1);
 				((TextView)findViewById(R.id.hintTxtView)).setText(hintDetail1);
 			}else{
@@ -313,9 +361,9 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		((Button)findViewById(R.id.hint2)).setEnabled(isEnable);
 		((Button)findViewById(R.id.hint3)).setEnabled(isEnable);
 	}
-	
-	
-	protected void googleleaderBoard() {
+
+
+	public void googleleaderBoard() {
 		beginUserInitiatedSignIn();
 		if(isSignedIn()){
 			total_score = preferences.getInt(ConstantValues.SCORE, 0);

@@ -9,13 +9,11 @@ import java.util.ArrayList;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -125,8 +123,8 @@ public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListene
 		intent.putExtra(ConstantValues.CATEGORY, categoryName);
 		intent.putExtra(ConstantValues.IMAGE, bitmap);
 		intent.putExtra(ConstantValues.ANSWER, logoNameList.get(position));
-		intent.putExtra(ConstantValues.HINT1, hint1List.get(position));
-		intent.putExtra(ConstantValues.HINT2, hint2List.get(position));
+		intent.putExtra(ConstantValues.HINT1_TEXT, hint1List.get(position));
+		intent.putExtra(ConstantValues.HINT2_TEXT, hint2List.get(position));
 		intent.putExtra(ConstantValues.POSITION,++position);
 		startActivity(intent);
 
