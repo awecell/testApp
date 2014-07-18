@@ -10,8 +10,8 @@
         android:contentDescription="@string/app_name"/>
     <ImageView 
         android:id="@+id/lockImage"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_centerInParent="true"
         android:background="@drawable/lock"
         android:contentDescription="@string/app_name"/>

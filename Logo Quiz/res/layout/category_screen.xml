@@ -2,13 +2,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="3dp"
+    android:background="@drawable/background"
     tools:context=".Level_screen" >
 
     <LinearLayout
         android:id="@+id/titleBarOnLevelScreen"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#CFCECE"
+        android:layout_height="50dp"
+        android:background="@drawable/top"
         android:gravity="center" 
         android:padding="5dp">
 
@@ -19,18 +21,14 @@
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
-    <ScrollView
+    <GridView 
+        android:id="@+id/categoriesView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/titleBarOnLevelScreen"
-        android:padding="10dp" >
-
-        <LinearLayout
-            android:id="@+id/layoutForLevels"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical" >
-        </LinearLayout>
-    </ScrollView>
+        android:padding="5dp"
+        android:numColumns="2"
+        android:verticalSpacing="20dp"
+        android:horizontalSpacing="40dp"
+        android:gravity="center"></GridView>
 </RelativeLayout>

@@ -19,6 +19,7 @@ public class ConstantValues {
 	public static final String INTERSTITIAL_AD_LOADED = "mInterstitialAd loaded";
 	public static final String HINT1_TEXT = "hint1";
 	public static final String HINT2_TEXT = "hint2";
+	public static final String JUMBLE_HINT_TEXT = "jumbleHint";
 	public static final String LEADERBOARD_ID = "abcd";
 	public static final String SCORE = "Score";
 	public static final String ABOUT_HINT = "Shows clue sentence of the answer!";
@@ -33,6 +34,5 @@ public class ConstantValues {
 	public static final int HINT1 = 2;
 	public static final int HINT2 = 3;
 	public static final String NO_HINT_STATEMENT = "You have no hint left";
-	public static final int USED_HINT = 4;
-	public static final int UNUSED_HINT = 5;
+	public static final String XML = "_xml";
 }

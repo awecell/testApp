@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="3dp"
     tools:context=".GameScreen" >
 
    
@@ -9,15 +10,25 @@
     <RelativeLayout
         android:id="@+id/titleBarOnGameScreen"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#CFCECE"
+        android:layout_height="50dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/top"
         android:padding="3dp" >
+        
+        <Button 
+            android:id="@+id/back"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/back_xml"
+            android:layout_alignParentLeft="true"/>
 
         <TextView
             android:id="@+id/lvelNameView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:gravity="center"
             android:text="@string/levels"
             android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -27,6 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:gravity="center"
             android:text="@string/hint"
             android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -34,8 +46,8 @@
 
     <ImageView
         android:id="@+id/imageViewOnGameScreen"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_below="@+id/titleBarOnGameScreen"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
@@ -52,21 +64,23 @@
 
         <Button
             android:id="@+id/hint1"
-            android:layout_width="40dp"
-            android:layout_height="40dp" 
-            android:background="@drawable/faded_jumble"/>
+            android:layout_width="70dp"
+            android:layout_height="39dp"
+            android:background="@drawable/jumble_xml" />
 
         <Button
             android:id="@+id/hint2"
-            android:layout_width="40dp"
-            android:layout_height="40dp" 
-            android:background="@drawable/faded_hint1"/>
+            android:layout_width="70dp"
+            android:layout_height="39dp" 
+            android:layout_marginTop="5dp"
+            android:background="@drawable/jumble_xml"/>
 
         <Button
             android:id="@+id/hint3"
-            android:layout_width="40dp"
-            android:layout_height="40dp" 
-            android:background="@drawable/faded_hint2"/>
+            android:layout_width="70dp"
+            android:layout_height="39dp" 
+            android:layout_marginTop="5dp"
+            android:background="@drawable/jumble_xml"/>
     </LinearLayout>
 
     <LinearLayout
@@ -79,19 +93,17 @@
         android:orientation="vertical" >
 
         <Button
-            android:id="@+id/hint4"
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
-
+            android:id="@+id/fb"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/fb_xml" />
+        
         <Button
-            android:id="@+id/hint5"
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
-
-        <Button
-            android:id="@+id/hint6"
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
+            android:id="@+id/buy"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/buy_xml" />
     </LinearLayout>
 
     <LinearLayout
@@ -114,9 +126,9 @@
 
         <Button
             android:id="@+id/checkAnswerButton"
-            android:layout_width="80dp"
+            android:layout_width="112dp"
             android:layout_height="50dp"
-            android:text="@string/check"
+            android:background="@drawable/check_xml"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </LinearLayout>
 
@@ -169,6 +181,7 @@
             android:layout_height="40dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
+            android:background="#2B1B17"
             android:text="@string/ok" />
     </RelativeLayout>
     
@@ -198,6 +211,7 @@
             android:layout_height="40dp"
             android:layout_centerHorizontal="true" 
             android:layout_alignParentBottom="true"
+            android:background="#2B1B17"
             android:text="@string/ok"/>
 
     </RelativeLayout>

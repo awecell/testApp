@@ -2,22 +2,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="3dp"
     tools:context=".SelectPuzzleScreee" >
     
-    <LinearLayout 
+    <RelativeLayout 
         android:id="@+id/titleBarOnLevelDetail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:padding="3dp"
-        android:gravity="center"
-        android:background="#CFCECE"
+        android:gravity="center_vertical"
+        android:background="@drawable/top"
         android:orientation="horizontal">
+        
+        <Button 
+            android:id="@+id/backButton"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/back_xml"
+            android:layout_alignParentLeft="true"/>
         <TextView 
             android:id="@+id/levelName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:textAppearance="?android:attr/textAppearanceMedium"/>
-    </LinearLayout>
+    </RelativeLayout>
     <GridView 
         android:id="@+id/gridView"
         android:layout_width="match_parent"

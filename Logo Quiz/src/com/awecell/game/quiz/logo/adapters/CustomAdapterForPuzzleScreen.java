@@ -12,13 +12,13 @@ import android.widget.ImageView;
 import com.awecell.game.quiz.category.logo.R;
 import com.awecell.game.quiz.logo.utils.ConstantValues;
 
-public class CustomAdapter extends BaseAdapter{
+public class CustomAdapterForPuzzleScreen extends BaseAdapter{
 
 	private Context context;
 	private ArrayList<String> data;
 	private ArrayList<Integer> answeredList;
 
-	public CustomAdapter(Context context,ArrayList<String> data,ArrayList<Integer> answeredList){
+	public CustomAdapterForPuzzleScreen(Context context,ArrayList<String> data,ArrayList<Integer> answeredList){
 		this.context = context;
 		this.data = data;
 		this.answeredList = answeredList;
@@ -57,7 +57,7 @@ public class CustomAdapter extends BaseAdapter{
 	public View getView(int position, View convertView, ViewGroup parent) {
 		if(convertView == null){
 			LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = inflater.inflate(R.layout.adapter_layout,null,false);
+			convertView = inflater.inflate(R.layout.adapter_layout_puzzle_screen,null,false);
 		}
 
 		ImageView imageView = (ImageView)convertView.findViewById(R.id.imageViewOnGrid);

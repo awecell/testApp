@@ -4,48 +4,72 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
-import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.GridView;
+import android.widget.ImageButton;
 
 import com.awecell.game.quiz.category.logo.R;
+import com.awecell.game.quiz.logo.adapters.CustomAdapterForCategoryScreen;
 import com.awecell.game.quiz.logo.utils.ConstantValues;
 import com.awecell.game.quiz.logo.utils.CreateDb;
 
 public class CategoryScreen extends BaseScreen implements OnClickListener{
 
-	private int screenWidth;
-	private int screenHeight;
-	private LinearLayout layoutForLevels;
+	private GridView categoriesView;
+	private ArrayList<String> categoriesName = new ArrayList<String>();
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// adding category screen to BaseScreen
-		LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		View view = inflator.inflate(R.layout.category_screen, null,false);
-        layoutForChildView.addView(view);
-        
-        
-		screenWidth = getResources().getDisplayMetrics().widthPixels;
-		screenHeight = getResources().getDisplayMetrics().heightPixels;
-		layoutForLevels = ((LinearLayout)findViewById(R.id.layoutForLevels));
-		createCategories();
+		new LoadCategories().execute();
 		CreateDb createDb = new CreateDb(this);
         createDb.start();
 	}
 	
+	private class LoadCategories extends AsyncTask<Void, Void, Void>{
+		
+		private View view;
+		
+		@Override
+		protected void onPreExecute() {
+			LayoutInflater inflator = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			view = inflator.inflate(R.layout.category_screen, null,false);
+			super.onPreExecute();
+		}
+
+		@Override
+		protected Void doInBackground(Void... params) {
+			createCategories();
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			runOnUiThread(new Runnable() {
+				
+				@Override
+				public void run() {
+					categoriesView = ((GridView)view.findViewById(R.id.categoriesView));
+					categoriesView.setAdapter(new CustomAdapterForCategoryScreen(CategoryScreen.this,categoriesName));
+					layoutForChildView.removeAllViews();
+					layoutForChildView.addView(view);
+				}
+			});
+			super.onPostExecute(result);
+		}
+		
+	}
 
 	private void createCategories() {
 		AssetManager assetManager = this.getAssets();
@@ -57,18 +81,11 @@ public class CategoryScreen extends BaseScreen implements OnClickListener{
 			file = new InputStreamReader(inStream);
 			reader = new BufferedReader(file);
 			String category = ConstantValues.CATEGORY;
+			category = category.trim();
 			while (category!=null) {
 				category = reader.readLine();
 				if(category!=null){
-					TextView levelText = new TextView(this);
-					levelText.setOnClickListener(this);
-					levelText.setGravity(Gravity.CENTER);
-					levelText.setText(category);
-					levelText.setBackgroundColor(Color.YELLOW);
-					int width = (int) (screenWidth*0.78f);
-					int height = (int) (screenHeight*0.208f);
-					levelText.setLayoutParams(getLayoutParams(width, height));
-					layoutForLevels.addView(levelText);
+					categoriesName.add(category);
 				} 
 			}
 		} catch (IOException e) {
@@ -87,17 +104,9 @@ public class CategoryScreen extends BaseScreen implements OnClickListener{
 	
 	
 
-	private LinearLayout.LayoutParams getLayoutParams(int width,int height){
-		LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width, height);
-		param.topMargin = (int) (screenWidth*0.041);
-		return param;
-	}
-	
-	
-
 	@Override
 	public void onClick(View view) {
-		String categoryName = ((TextView)view).getText().toString();
+		String categoryName = ((ImageButton)view).getTag().toString();
 		Intent intent = new Intent(this, SelectPuzzleScreen.class);
 		intent.putExtra(ConstantValues.CATEGORY, categoryName);
 		startActivity(intent);

@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.awecell.game.quiz.category.logo.R;
+import com.awecell.game.quiz.logo.database.DbHelper;
 import com.awecell.game.quiz.logo.utils.ConstantValues;
 import com.awecell.game.quiz.logo.utils.UpdateDb;
 import com.google.android.gms.games.Games;
@@ -47,6 +48,7 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 	private Button jumbleHintButton ;
 	private Button hint1Button;
 	private Button hint2Button;
+	private int width;
 
 
 	private boolean isHintLayoutOpen = false;
@@ -60,8 +62,10 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		//adding GameScreen layout to BaseScreen
 		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View view = inflater.inflate(R.layout.game_screen,null,false);
+		layoutForChildView.removeAllViews();
 		layoutForChildView.addView(view);
 
+		width = getResources().getDisplayMetrics().widthPixels;
 		logoView = ((ImageView)findViewById(R.id.imageViewOnGameScreen));
 		userInputEditText = ((EditText)findViewById(R.id.userInputEditText));
 		hintText = ((TextView)findViewById(R.id.noOfHintView));
@@ -96,9 +100,6 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		hint1Button.setOnClickListener(this);
 		hint2Button.setOnClickListener(this);
 
-		jumbleHintButton.setTag(ConstantValues.UNUSED_HINT);
-		hint1Button.setTag(ConstantValues.UNUSED_HINT);
-		hint2Button.setTag(ConstantValues.UNUSED_HINT);
 		((Button)findViewById(R.id.okHintBtn)).setOnClickListener(this);
 
 	}
@@ -123,6 +124,7 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 
 	@Override
 	public void onClick(View v) {
+		
 		switch (v.getId()) {
 		case R.id.checkAnswerButton:
 			if(isAnswerRight()){
@@ -140,8 +142,11 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		case R.id.hint1:
 			//jumble keypad
 			total_hint = preferences.getInt(ConstantValues.HINT,5);
-			int state = Integer.parseInt(jumbleHintButton.getTag().toString());
-			if(state==ConstantValues.UNUSED_HINT){
+			DbHelper dbHelper = new DbHelper(this);
+			dbHelper.open();
+			boolean isHintUsed = dbHelper.isHintUsed(categoryName, ConstantValues.JUMBLE_HINT_TEXT, rowId);
+			dbHelper.close();
+			if(!isHintUsed){
 				if(total_hint>0){
 					hint_name = ConstantValues.JUMBLE_HINT;
 					showAlertBeforeUsingHint(ConstantValues.ABOUT_JUMBLE_HINT, ConstantValues.JUMBLE_HINT_COST);
@@ -155,8 +160,11 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		case R.id.hint2:
 			// hint detail 1
 			total_hint = preferences.getInt(ConstantValues.HINT,5);
-			state = Integer.parseInt(hint1Button.getTag().toString());
-			if(state==ConstantValues.UNUSED_HINT){
+		    dbHelper = new DbHelper(this);
+		    dbHelper.open();
+		    isHintUsed = dbHelper.isHintUsed(categoryName, ConstantValues.HINT1_TEXT, rowId);
+			dbHelper.close();
+			if(!isHintUsed){
 				if(total_hint>0){
 					hint_name = ConstantValues.HINT1;
 					showAlertBeforeUsingHint(ConstantValues.ABOUT_HINT, ConstantValues.HINT1_COST);
@@ -170,8 +178,11 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 		case R.id.hint3:
 			//hint detail2
 			total_hint = preferences.getInt(ConstantValues.HINT,5);
-			state = Integer.parseInt(hint2Button.getTag().toString());
-			if(state==ConstantValues.UNUSED_HINT){
+			dbHelper = new DbHelper(this);
+			dbHelper.open();
+		    isHintUsed = dbHelper.isHintUsed(categoryName, ConstantValues.HINT2_TEXT, rowId);
+			dbHelper.close();
+			if(!isHintUsed){
 				if(total_hint>0){
 					hint_name = ConstantValues.HINT2;
 					showAlertBeforeUsingHint(ConstantValues.ABOUT_HINT, ConstantValues.HINT2_COST);
@@ -196,7 +207,10 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 				getJumbledKeyPad();
 				total_hint -= ConstantValues.JUMBLE_HINT_COST;
 				preferences.edit().putInt(ConstantValues.HINT, total_hint).commit();
-				jumbleHintButton.setTag(ConstantValues.USED_HINT);
+				dbHelper = new DbHelper(this);
+				dbHelper.open();
+				dbHelper.updateHintState(categoryName, ConstantValues.JUMBLE_HINT_TEXT, rowId);
+				dbHelper.close();
 				hintText.setText(ConstantValues.HINT+" : "+total_hint);
 				break;
 			case ConstantValues.HINT1:
@@ -204,7 +218,10 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 				total_hint -= ConstantValues.HINT1_COST;
 				preferences.edit().putInt(ConstantValues.HINT, total_hint).commit();
 				moveDownHintLayout();
-				hint1Button.setTag(ConstantValues.USED_HINT);
+				dbHelper = new DbHelper(this);
+				dbHelper.open();
+				dbHelper.updateHintState(categoryName, ConstantValues.HINT1_TEXT, rowId);
+				dbHelper.close();
 				hintText.setText(ConstantValues.HINT+" : "+total_hint);
 				break;
 			case ConstantValues.HINT2:
@@ -212,7 +229,10 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 				total_hint -= ConstantValues.HINT2_COST;
 				preferences.edit().putInt(ConstantValues.HINT, total_hint).commit();
 				moveDownHintLayout();
-				hint2Button.setTag(ConstantValues.USED_HINT);
+				dbHelper = new DbHelper(this);
+				dbHelper.open();
+				dbHelper.updateHintState(categoryName, ConstantValues.HINT2_TEXT, rowId);
+				dbHelper.close();
 				hintText.setText(ConstantValues.HINT+" : "+total_hint);
 				break;
 			}
@@ -264,6 +284,8 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 			// getting random number and using it to set answer button in jumbled way
 			int index = new Random().nextInt(randomNumberList.size());
 			btn.setText(""+answer.charAt(randomNumberList.get(index)));
+			btn.setBackgroundResource(R.drawable.button_xml);
+			btn.setLayoutParams(getLayoutParam((int)(width*0.09f), (int)(width*0.09f)));
 			randomNumberList.remove(index);
 
 
@@ -273,6 +295,11 @@ public class GameScreen extends BaseScreen implements OnClickListener,AnimationL
 				KeypadSecondRow.addView(btn);
 		}
 
+	}
+	
+	private LinearLayout.LayoutParams getLayoutParam(int width,int height){
+		LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(width,height);
+		return param;
 	}
 
 

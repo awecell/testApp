@@ -17,18 +17,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.awecell.game.quiz.category.logo.R;
-import com.awecell.game.quiz.logo.adapters.CustomAdapter;
+import com.awecell.game.quiz.logo.adapters.CustomAdapterForPuzzleScreen;
 import com.awecell.game.quiz.logo.database.DbHelper;
 import com.awecell.game.quiz.logo.utils.ConstantValues;
 
-public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListener{
+public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListener,OnClickListener{
 
 	private String categoryName; 
 	private GridView gridView;
@@ -42,6 +44,7 @@ public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListene
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		//setContentView(R.layout.level_detail_screen);
+		layoutForChildView.removeAllViews();
 		LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View view = inflater.inflate(R.layout.puzzle_screen,null,false);
 		layoutForChildView.addView(view);
@@ -50,6 +53,7 @@ public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListene
 		((TextView)findViewById(R.id.levelName)).setText(categoryName);
 		gridView = (GridView)findViewById(R.id.gridView);
 		gridView.setOnItemClickListener(this);
+		((Button)findViewById(R.id.backButton)).setOnClickListener(this);
 
 	}
 
@@ -161,12 +165,18 @@ public class SelectPuzzleScreen extends BaseScreen implements OnItemClickListene
 
 				@Override
 				public void run() {
-					gridView.setAdapter(new CustomAdapter(SelectPuzzleScreen.this,logoNameList,answeredList));
+					gridView.setAdapter(new CustomAdapterForPuzzleScreen(SelectPuzzleScreen.this,logoNameList,answeredList));
 				}
 			});
 			super.onPostExecute(result);
 		}
 
+	}
+
+
+	@Override
+	public void onClick(View v) {
+		super.onBackPressed();
 	}
 	
 }

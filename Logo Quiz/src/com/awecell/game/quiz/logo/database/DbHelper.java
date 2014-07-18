@@ -116,14 +116,33 @@ public class DbHelper extends SQLiteOpenHelper{
 
 
 	public boolean isAnswered(String tableName,int rowId){
-		String querry = "Select "+KEY_ISANSWERED+" FROM "+tableName+" where "+KEY_ROWID+" = "+rowId;
+		String querry = "SELECT "+KEY_ISANSWERED+" FROM "+tableName+" where "+KEY_ROWID+" = "+rowId;
 		Cursor cursor = db.rawQuery(querry, null);
 		cursor.moveToFirst();
 		int isAnswered = cursor.getInt(0);
 		cursor.close();
 		return isAnswered != 0? true : false;
 	}
+	
+	public boolean isHintUsed(String tableName, String columnName,int rowId){
+		String query = "SELECT "+columnName+" FROM "+tableName+" WHERE "+KEY_ROWID+" = "+rowId;
+		Cursor cursor = db.rawQuery(query, null);
+		cursor.moveToFirst();
+		int isUsed = cursor.getInt(0);
+		if(isUsed==0){
+			return false;
+		}else{
+			return true;
+		}
+	}
+	
+	
+	public void updateHintState(String tableName,String columnName,int rowId){
+		String query = "UPDATE "+tableName+" SET "+columnName+" = 1 "+"WHERE "+KEY_ROWID+" = "+rowId;
+		db.execSQL(query);
+	}
 
+	
 	public Cursor getAnswerList(String tableName){
 		String querry = "SELECT "+KEY_ISANSWERED+" FROM "+tableName;
 		Cursor cursor = db.rawQuery(querry, null);
